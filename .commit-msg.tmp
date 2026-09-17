@@ -1,0 +1,5 @@
+refactor: skill 移出 .comate 目录，改为仓库根级 dataset-conform/
+
+仓库不再假设 Comate 的目录布局，克隆后可直接把 dataset-conform/
+复制到任意 Agent 的 skills 目录（.comate/skills 或 .claude/skills）。
+README 中的安装命令、目录结构与文档链接同步更新。

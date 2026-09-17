@@ -25,10 +25,10 @@
 
 ```bash
 git clone https://github.com/bymb888/dataset-conform-skills.git
-cp -r dataset-conform-skills/.comate/skills/dataset-conform <你的项目>/.comate/skills/
+cp -r dataset-conform-skills/dataset-conform <你的项目>/.comate/skills/
 ```
 
-Claude Code 用户放到 `.claude/skills/` 下同样可用（SKILL.md 使用标准 frontmatter 格式）。
+Claude Code 用户放到 `.claude/skills/` 下同样可用（SKILL.md 使用标准 frontmatter 格式）。也可以放到用户级 skills 目录全局启用。
 
 之后向 Agent 描述任务即可触发，例如：
 
@@ -37,7 +37,7 @@ Claude Code 用户放到 `.claude/skills/` 下同样可用（SKILL.md 使用标�
 ## 目录结构
 
 ```
-.comate/skills/dataset-conform/
+dataset-conform/
 ├── SKILL.md                              主流程（7 步）与常见坑
 ├── references/
 │   ├── spec-authoring.md                 如何从参考样例提炼 spec.json / spec.md
@@ -66,7 +66,7 @@ python dataset_tool.py diff --before data.json --after merged.json --id-field id
 
 支持的容器形式：JSON 数组、JSONL、对象映射（`--container array|jsonl|object_map`）。
 
-`spec.json` 支持的校验类型见 [spec-authoring.md](.comate/skills/dataset-conform/references/spec-authoring.md)：类型/必填/空值/长度/正则/枚举/数组基数，以及 `index_in_range`、`value_in_set_from`、`any_in_set_from`、`unique_local`、`unique_global`、`must_contain` 等跨字段检查。
+`spec.json` 支持的校验类型见 [spec-authoring.md](dataset-conform/references/spec-authoring.md)：类型/必填/空值/长度/正则/枚举/数组基数，以及 `index_in_range`、`value_in_set_from`、`any_in_set_from`、`unique_local`、`unique_global`、`must_contain` 等跨字段检查。
 
 ## 设计原则
 
