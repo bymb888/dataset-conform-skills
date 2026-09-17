@@ -24,8 +24,8 @@
 把 `dataset-conform/` 目录放进你的 skills 目录即可：
 
 ```bash
-git clone https://github.com/<your-name>/dataset-conform-skill.git
-cp -r dataset-conform-skill/.comate/skills/dataset-conform <你的项目>/.comate/skills/
+git clone https://github.com/bymb888/dataset-conform-skills.git
+cp -r dataset-conform-skills/.comate/skills/dataset-conform <你的项目>/.comate/skills/
 ```
 
 Claude Code 用户放到 `.claude/skills/` 下同样可用（SKILL.md 使用标准 frontmatter 格式）。
