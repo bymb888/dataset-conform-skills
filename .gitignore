@@ -1,0 +1,13 @@
+# 本地业务数据，不入库
+/word_roots.json
+/sample_data.json
+*.bak-run-*.json
+
+# skill 运行中间产物
+.dataset-conform/
+.smoke/
+.smoke.txt
+
+# Python
+__pycache__/
+*.py[cod]

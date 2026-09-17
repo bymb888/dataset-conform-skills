@@ -1,0 +1,96 @@
+{
+  "name": "english-word-roots",
+  "_note": "英语词根数据集的 spec 示例。",
+  "container": "array",
+  "idField": "id",
+  "forbidExtraFields": true,
+  "entry": {
+    "type": "object",
+    "required": ["id", "root", "origin", "meaning", "meaningEn", "description", "examples", "quiz"],
+    "fields": {
+      "id": { "type": "integer", "min": 1 },
+      "root": { "type": "string", "pattern": "^[A-Za-z-]+(/[A-Za-z-]+)*$" },
+      "origin": { "type": "string" },
+      "meaning": { "type": "string" },
+      "meaningEn": { "type": "string" },
+      "description": { "type": "string", "minLen": 40, "severity": "warn" },
+      "examples": {
+        "type": "array",
+        "minItems": 8,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "required": ["word", "breakdown", "meaning", "explanation", "sentences"],
+          "fields": {
+            "word": { "type": "string", "pattern": "^[a-z][a-z-]*$" },
+            "breakdown": {
+              "type": "object",
+              "required": ["prefix", "root", "suffix"],
+              "fields": {
+                "prefix": { "type": "string", "allowEmpty": true },
+                "root": { "type": "string" },
+                "suffix": { "type": "string", "allowEmpty": true }
+              }
+            },
+            "meaning": { "type": "string" },
+            "explanation": { "type": "string" },
+            "sentences": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["en", "cn"],
+                "fields": {
+                  "en": { "type": "string" },
+                  "cn": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "quiz": {
+        "type": "object",
+        "required": ["question", "options", "correctAnswer"],
+        "fields": {
+          "question": { "type": "string" },
+          "options": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string" } },
+          "correctAnswer": { "type": "integer", "min": 0, "max": 3 }
+        }
+      }
+    }
+  },
+  "checks": [
+    { "id": "unique_id", "type": "unique_global", "path": "id" },
+    { "id": "unique_word_in_entry", "type": "unique_local", "path": "examples[].word" },
+    { "id": "quiz_answer_in_range", "type": "index_in_range", "path": "quiz.correctAnswer", "of": "quiz.options" },
+    { "id": "quiz_options_exactly_4", "type": "array_len", "path": "quiz.options", "equals": 4 },
+    { "id": "explanation_has_arrow", "type": "must_contain", "path": "examples[].explanation", "substring": "→" },
+    {
+      "id": "breakdown_covers_root",
+      "type": "any_in_set_from",
+      "itemPath": "examples[]",
+      "paths": ["breakdown.prefix", "breakdown.root", "breakdown.suffix"],
+      "source": "root",
+      "split": "/",
+      "strip": "-",
+      "lowercase": true,
+      "mode": "lenient",
+      "severity": "warn"
+    }
+  ],
+  "semanticRules": [
+    "词根归属：每个例词必须真实含有该条目的词根/词缀语素。词源上不含该语素的词（如 antique 源自 antiquus，与否定前缀 anti- 无关）不得归入。",
+    "explanation 可推导性：explanation 须由 breakdown 各部分逐步推出「→」后的整体释义，且该释义与 meaning 一致。",
+    "meaning 与 meaningEn 对应：中英文含义不得矛盾或各说一套。",
+    "例句忠实性：sentences[].cn 必须忠实翻译 en，不增删关键信息，不生硬直译。",
+    "例句自然度：en 须是自然通顺、符合常理的真实语用句子，不得为凑例句生造。",
+    "quiz 正确性：correctAnswer 指向的选项必须真的是正确答案，其余三项须是有干扰性但明确错误的选项（通常取自同条目其他例词的释义）。",
+    "description 变体覆盖：应说明词根的所有拼写变体及其出现场景（如 plex 为过去分词形、ply 为动词形、an- 用于元音前）。"
+  ],
+  "_calibration": {
+    "breakdown_covers_root": "降级为 warn 且用 lenient 模式：参考样例中 simple 拆为 sim+ple，而 root 字段为 plic/plex/ply（ple 仅为 plex 的子串）；前缀类条目（a-/an-）的语素落在 breakdown.prefix 而非 root。说明该规则是软约束，命中失败只提示人工复核。",
+    "description.minLen": "降级为 warn：长度只是可读性参考，不是格式错误。"
+  }
+}
