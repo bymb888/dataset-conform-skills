@@ -16,7 +16,7 @@
       "description": { "type": "string", "minLen": 40, "severity": "warn" },
       "examples": {
         "type": "array",
-        "minItems": 8,
+        "minItems": 4,
         "maxItems": 8,
         "items": {
           "type": "object",
@@ -87,10 +87,14 @@
     "例句忠实性：sentences[].cn 必须忠实翻译 en，不增删关键信息，不生硬直译。",
     "例句自然度：en 须是自然通顺、符合常理的真实语用句子，不得为凑例句生造。",
     "quiz 正确性：correctAnswer 指向的选项必须真的是正确答案，其余三项须是有干扰性但明确错误的选项（通常取自同条目其他例词的释义）。",
+    "例词可及性：例词须是学习者用得上的常用词，不得为满足格式或凑数量而选冷僻词、超长派生词。判据：(a) 优先命中 CET4 / CET6 / GaoZhong / BeiShiGaoZhong / GMAT 系列——本项目 resources/data/dict/ 下有 81 个词书文件（JSONL，每行含 headWord 字段，可直接核验），一个词同时命中多个系列时按最低级别记；(b) 一个词书都不命中的词不得入选（如 asocial），只命中 GRE / SAT / Level8 / TOEFL 的词尽量避免；(c) 长度以 11 个字母为软上限（conspicuous、perspective 已在边界）；(d) 数量 4~8 个，同一条目应覆盖不同难度档——与其凑到 8 个而塞进冷僻词，不如只留 4~5 个常用词。替换例词时新词常用度不得低于被替换的词：把 simple 换成一个格式合规但没人认得的派生词，比留着 simple 更糟。",
     "description 变体覆盖：应说明词根的所有拼写变体及其出现场景（如 plex 为过去分词形、ply 为动词形、an- 用于元音前）。"
+
   ],
   "_calibration": {
-    "breakdown_covers_root": "降级为 warn 且用 lenient 模式：参考样例中 simple 拆为 sim+ple，而 root 字段为 plic/plex/ply（ple 仅为 plex 的子串）；前缀类条目（a-/an-）的语素落在 breakdown.prefix 而非 root。说明该规则是软约束，命中失败只提示人工复核。",
-    "description.minLen": "降级为 warn：长度只是可读性参考，不是格式错误。"
+    "breakdown_covers_root": "降级为 warn 且用 lenient 模式，但要分清两类命中失败——(1) 结构性：词缀类条目（root 形如 a-/an-）的语素必然落在 breakdown.prefix 而非 breakdown.root，同类条目 8/8 全违反，属规范漏了一种数据形态，应在规则文档中补例外条款；(2) 个例：样例中 simple 拆为 sim+ple 而 root 为 plic/plex/ply、conspicuous 用了未声明的变体 spic，各只占 1/8，属数据缺陷（前者选词不当应换词，后者应把 spic 补进 root 字段），不是规则太严。设为 warn 只是让流程能往下走，不等于认定该规则是软约束。",
+    "description.minLen": "降级为 warn：长度只是可读性参考，不是格式错误。",
+    "_missing_check": "第 11 类反向约束（root 字段须涵盖 examples 实际使用的全部变体）目前 dataset_tool.py 无对应 check 类型，只能靠 breakdown_root_literal 之类的正向检查间接发现，或写进 semanticRules 交子代理判断。"
   }
+
 }

@@ -70,3 +70,6 @@ python <skill>/scripts/dataset_tool.py diff --before <原数据> --after merged.
 ```
 
 看三件事：守卫告警是否为空、error 数是否真的下降、diff 里的变更字段分布是否与预期一致（出现了没打算改的字段路径，说明有子代理越界了）。
+
+Windows 上把 `python` 换成 `py -X utf8`，理由见 SKILL.md 的「运行环境」。
+
